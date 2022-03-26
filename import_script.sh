@@ -1,8 +1,7 @@
 #!/bin/bash
-database_name='/home/braeden/db412'
 import_dir='/home/braeden/Downloads/archive/*'
-username="braeden"
-database_name="braeden"
+username=$USER
+database_name=$USER
 
 for file in $import_dir
 do
