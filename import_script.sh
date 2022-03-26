@@ -17,6 +17,7 @@ do
 	import_script_3="'${file}' DELIMITER ',' CSV HEADER"
 	import_script_full="${import_script_1} ${import_script_2} ${import_script_3}"
 	echo $import_script_full
+	psql -U $USER -d $database_name -c "DROP TABLE ${coin_name}"
 	psql -U $USER -d $database_name -c "$create_script_full"
 	psql -U $USER -d $database_name -c "$import_script_full"
 done
