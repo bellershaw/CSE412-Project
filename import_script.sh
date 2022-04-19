@@ -1,7 +1,7 @@
 #!/bin/bash
-import_dir='/home/braeden/Downloads/archive/*'
+import_dir='/coin_data/import_data/*'
 username=$USER
-database_name=$USER
+database_name=cryptoproject
 
 for file in $import_dir
 do
@@ -17,7 +17,7 @@ do
 	import_script_3="'${file}' DELIMITER ',' CSV HEADER"
 	import_script_full="${import_script_1} ${import_script_2} ${import_script_3}"
 	echo $import_script_full
-	psql -U $USER -d $database_name -c "DROP TABLE ${coin_name}"
-	psql -U $USER -d $database_name -c "$create_script_full"
-	psql -U $USER -d $database_name -c "$import_script_full"
+	psql -h localhost -U $USER -d $database_name -c "DROP TABLE ${coin_name}"
+	psql -h localhost -U $USER -d $database_name -c "$create_script_full"
+	psql -h localhost -U $USER -d $database_name -c "$import_script_full"
 done
