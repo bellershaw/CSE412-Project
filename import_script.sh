@@ -1,5 +1,5 @@
 #!/bin/bash
-import_dir='/coin_data/import_data/*'
+import_dir='/Users/houchins/School/Spring_2022/CSE_412/Final_Project/final_code/coin_data/import_data/*'
 username=$USER
 database_name=cryptoproject
 
@@ -9,7 +9,7 @@ do
 	coin_name="${file_name:5}"
 	echo $coin_name
 	create_script_1="CREATE TABLE ${coin_name}"
-	create_script_2='(sno INT,name VARCHAR(30), sym VARCHAR(4), date VARCHAR(25), high FLOAT(24), low FLOAT(24), open FLOAT(24), close FLOAT(24), volume float(24), mcap FLOAT(24), PRIMARY KEY(sno))'
+	create_script_2='(sno INT,name VARCHAR(30), sym VARCHAR(5), date VARCHAR(25), high FLOAT(24), low FLOAT(24), open FLOAT(24), close FLOAT(24), volume float(24), mcap FLOAT(24), PRIMARY KEY(sno))'
 	create_script_full="${create_script_1} ${create_script_2}"
 	echo $create_script_full
 	import_script_1="COPY ${coin_name}"
