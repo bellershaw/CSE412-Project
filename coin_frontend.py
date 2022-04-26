@@ -35,6 +35,10 @@ def list_currencies():
 	for table, in tables:
 		print(table)
 
+def get_close(my_date, current_coin):
+	cur.execute(f"SELECT close FROM {current_coin} WHERE date = {my_date};")
+	return cur.fetchall()[0][0]
+
 def view_highs(current_coin):
 	font = Figlet(font='standard')
 	print(colored(font.renderText('Daily High'), 'blue'))
@@ -106,7 +110,25 @@ def get_avg(current_coin):
 	font = Figlet(font='standard')
 	print(colored(font.renderText('Average Price'), 'blue'))
 	cur.execute(f"SELECT AVG(close) FROM {current_coin};")
-	print(f"Average volume of {current_coin} = ${cur.fetchall()[0][0]}\n")
+	print(f"Average price of {current_coin} = ${cur.fetchall()[0][0]}\n")
+	click.pause()
+	click.clear()
+
+def get_avg_range(my_start, my_end, current_coin):
+	my_start = "\'" + my_start + " 23:59:59\'"
+	my_end = "\'" + my_end + " 23:59:59\'"
+	font = Figlet(font='standard')
+	print(colored(font.renderText('Average Price'), 'blue'))
+	cur.execute(f"SELECT AVG(close) FROM {current_coin} WHERE date BETWEEN {my_start} AND {my_end};")
+	average_value = cur.fetchall()[0][0]
+	if (average_value is None):
+		print("Date not found within database OR date is invalid. ") 
+	#elif (get_close(my_start, current_coin) == average_value):
+	#	print("End date out of range.")
+	#elif (get_close(my_end, current_coin) == average_value):
+	#	print("Start date out of range.")
+	else:
+		print(f"Average price of {current_coin} from {my_start} to {my_end} = ${average_value}\n")
 	click.pause()
 	click.clear()
 
@@ -129,15 +151,14 @@ def get_max_market_cap(current_coin):
 def view_help():
 	font = Figlet(font='standard')
 	print(colored(font.renderText('User Help'), 'blue'))
-	print(t.bold + "Highs" + t.normal + " - Represents the highest value of the coin on the specified date\n" + t.bold + "Lows" + t.normal + " - Represents the lowest value of the coin on the specified date\n" + t.bold + "Opening Value" + t.normal + " - Represents the opening value of the coin on the specified date\n" + t.bold + "Closing Value" + t.normal + " - Represents the closing value of the coin on the specified date\n" + t.bold + "Volume of Transactions" + t.normal + " - Represents the volume of transactions in USD on the specified date\n" + t.bold + "Marketcap" + t.normal + " - Represents the marketcap of the coin on the specified date\n")
-	click.pause()
+	print(t.bold + "Highs" + t.normal + " - Represents the highest value of the coin on the specified date\n" + t.bold + "Lows" + t.normal + " - Represents the lowest value of the coin on the specified date\n" + t.bold + "Opening Value" + t.normal + " - Represents the opening value of the coin on the specified date\n" + t.bold + "Closing Value" + t.normal + " - Represents the closing value of the coin on the specified date\n" + t.bold + "Volume of Transactions" + t.normal + " - Represents the volume of transactions for the specified date\n" + t.bold + "Marketcap" + t.normal + " - Represents the market capitalization of the coin in USD on the specified date\n")	
+	click.pause()	
 	click.clear()
 
 def sub_menu_show(coin):
 	print(t.clear())
 
-	selection_sub_menu = ["[1] Highs", "[2] Lows", "[3] Opening Values", "[4] Closing Values", "[5] Volume of Transactions", "[6] Marketcap of Coin", "[7] Calculate Average Price", "[8] Calculate Average Volume", "[9] Calculate Biggest Market Capitalization", "[h] Help", "[q] Return to Main Menu"]
-
+	selection_sub_menu = ["[a] Highs", "[b] Lows", "[c] Opening Values", "[d] Closing Values", "[e] Volume of Transactions", "[f] Marketcap of Coin", "[g] Calculate Average Price", "[i] Calculate Average Price Given a Range", "[j] Calculate Average Volume", "[k] Calculate Biggest Market Capitalization", "[h] Help", "[q] Return to Main Menu"]
 	sub_menu = TerminalMenu(selection_sub_menu)
 
 	my_return = False
@@ -150,31 +171,36 @@ def sub_menu_show(coin):
 		if (selection_choice == "[q] Return to Main Menu"):
 			print(t.clear())
 			my_return = True
-		if (selection_choice == "[1] Highs"):
+		if (selection_choice == "[a] Highs"):
 			print(t.clear())
 			view_highs(coin)
-		if (selection_choice == "[2] Lows"):
+		if (selection_choice == "[b] Lows"):
 			print(t.clear())
 			view_lows(coin)
-		if (selection_choice == "[3] Opening Values"):
+		if (selection_choice == "[c] Opening Values"):
 			print(t.clear())
 			view_open(coin)
-		if (selection_choice == "[4] Closing Values"):
+		if (selection_choice == "[d] Closing Values"):
 			print(t.clear())
 			view_close(coin)
-		if (selection_choice == "[5] Volume of Transactions"):
+		if (selection_choice == "[e] Volume of Transactions"):
 			print(t.clear())
 			view_volume(coin)
-		if (selection_choice == "[6] Marketcap of Coin"):
+		if (selection_choice == "[f] Marketcap of Coin"):
 			print(t.clear())
 			view_cap(coin)
-		if (selection_choice == "[7] Calculate Average Price"):
+		if (selection_choice == "[g] Calculate Average Price"):
 			print(t.clear())
 			get_avg(coin)
-		if (selection_choice == "[8] Calculate Average Volume"):
+		if (selection_choice == "[i] Calculate Average Price Given a Range"):
+			start_range = input("Enter start date [YYYY-MM-DD]: ")
+			end_range = input("Enter end date [YYYY-MM-DD]: ")
+			print(t.clear())
+			get_avg_range(start_range, end_range, coin)
+		if (selection_choice == "[j] Calculate Average Volume"):
 			print(t.clear())
 			get_avg_volume(coin)
-		if (selection_choice == "[9] Calculate Biggest Market Capitalization"):
+		if (selection_choice == "[k] Calculate Biggest Market Capitalization"):
 			print(t.clear())
 			get_max_market_cap(coin)
 		elif (selection_choice == "[h] Help"):
